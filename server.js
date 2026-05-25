@@ -37,6 +37,7 @@ async function getPool() {
       waitForConnections: true,
       connectionLimit   : 10,
       timezone          : '+00:00',
+      ssl               : DB_CONFIG.ssl || false,
     });
   }
   return pool;
