@@ -1,0 +1,13 @@
+{
+  "name": "pred-transfer-allotment",
+  "version": "1.0.0",
+  "description": "Panchayat Raj Engineering Department Transfer Allotment System",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev"  : "node server.js"
+  },
+  "dependencies": {
+    "mysql2": "^3.9.0"
+  }
+}

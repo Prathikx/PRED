@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panchayat Raj Engineering Department Transfers 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  :root {
+    --primary: #1a3c6e; --accent: #c8a400; --light: #f0f4fa; --white: #ffffff;
+    --danger: #c0392b; --success: #1a7a4a; --border: #d0d8e8; --text: #1a2233;
+    --muted: #6b7a99; --shadow: 0 2px 12px rgba(26,60,110,0.10);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--light); color: var(--text); min-height: 100vh; }
+  .header { background: var(--primary); color: #fff; }
+  .header-inner { max-width: 1200px; margin: 0 auto; padding: 18px 24px; display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+  .header-logo { width: 54px; height: 54px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 900; color: var(--primary); flex-shrink: 0; }
+  .header-title h1 { font-size: 1.2rem; font-weight: 700; line-height: 1.2; }
+  .header-title p { font-size: 0.78rem; opacity: 0.8; margin-top: 2px; }
+  .header-badge { margin-left: auto; background: var(--accent); color: var(--primary); font-size: 0.75rem; font-weight: 700; padding: 5px 14px; border-radius: 20px; white-space: nowrap; }
+  .nav { background: #122a52; }
+  .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; }
+  .nav-btn { background: none; border: none; color: rgba(255,255,255,0.75); padding: 12px 16px; font-size: 0.83rem; cursor: pointer; font-weight: 600; transition: all 0.18s; border-bottom: 3px solid transparent; }
+  .nav-btn:hover { color: #fff; background: rgba(255,255,255,0.05); }
+  .nav-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .page { display: none; max-width: 1200px; margin: 0 auto; padding: 28px 20px; }
+  .page.active { display: block; }
+  .card { background: #fff; border-radius: 10px; box-shadow: var(--shadow); border: 1px solid var(--border); margin-bottom: 20px; overflow: hidden; }
+  .card-header { background: var(--primary); color: #fff; padding: 14px 20px; font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .card-body { padding: 20px; }
+  .form-row { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 14px; }
+  .form-group { flex: 1; min-width: 200px; }
+  .form-group label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--muted); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.4px; }
+  .form-group input, .form-group select { width: 100%; padding: 9px 12px; border: 1.5px solid var(--border); border-radius: 7px; font-size: 0.93rem; color: var(--text); outline: none; transition: border 0.15s; }
+  .form-group input:focus, .form-group select:focus { border-color: var(--primary); }
+  .btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 20px; border-radius: 7px; font-size: 0.9rem; font-weight: 600; border: none; cursor: pointer; transition: all 0.15s; }
+  .btn-primary { background: var(--primary); color: #fff; } .btn-primary:hover { background: #122a52; }
+  .btn-accent { background: var(--accent); color: var(--primary); } .btn-accent:hover { background: #b09000; }
+  .btn-success { background: var(--success); color: #fff; } .btn-success:hover { background: #145e38; }
+  .btn-danger { background: var(--danger); color: #fff; } .btn-danger:hover { background: #9b2c2c; }
+  .btn-sm { padding: 5px 12px; font-size: 0.8rem; }
+  .btn-outline { background: none; border: 1.5px solid var(--primary); color: var(--primary); } .btn-outline:hover { background: var(--light); }
+  .btn-excel { background: #1d6f42; color: #fff; } .btn-excel:hover { background: #155232; }
+  .btn-pdf { background: #c0392b; color: #fff; } .btn-pdf:hover { background: #922b21; }
+  .table-wrap { overflow-x: auto; border-radius: 8px; border: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+  th { background: var(--primary); color: #fff; padding: 11px 14px; text-align: left; font-weight: 600; font-size: 0.82rem; white-space: nowrap; }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--light); }
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 0.76rem; font-weight: 700; }
+  .badge-success { background: #e6f4ec; color: var(--success); }
+  .badge-pending { background: #fff3cd; color: #856404; }
+  .badge-danger { background: #fdecea; color: var(--danger); }
+  .badge-primary { background: #e8edf7; color: var(--primary); }
+  .login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #1a3c6e 0%, #122a52 60%, #0d1e3d 100%); padding: 20px; }
+  .login-box { background: #fff; border-radius: 14px; box-shadow: 0 8px 40px rgba(0,0,0,0.25); padding: 40px 36px; width: 100%; max-width: 420px; }
+  .login-logo { text-align: center; margin-bottom: 24px; }
+  .login-logo .logo-circle { width: 68px; height: 68px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 28px; color: var(--accent); font-weight: 900; }
+  .login-logo h2 { font-size: 1.1rem; color: var(--primary); font-weight: 700; }
+  .login-logo p { font-size: 0.78rem; color: var(--muted); margin-top: 3px; }
+  .login-tabs { display: flex; border: 1.5px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 22px; }
+  .login-tab { flex: 1; padding: 9px; text-align: center; font-size: 0.85rem; font-weight: 600; cursor: pointer; background: var(--light); color: var(--muted); border: none; transition: all 0.15s; }
+  .login-tab.active { background: var(--primary); color: #fff; }
+  .login-error { background: #fdecea; color: var(--danger); padding: 9px 14px; border-radius: 7px; font-size: 0.85rem; margin-bottom: 14px; display: none; }
+  .login-error.show { display: block; }
+  .import-zone { border: 2px dashed var(--border); border-radius: 10px; padding: 28px; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--light); }
+  .import-zone:hover, .import-zone.dragover { border-color: var(--primary); background: #e8edf7; }
+  .import-zone .icon-big { font-size: 2.5rem; margin-bottom: 10px; }
+  .import-zone p { font-size: 0.9rem; color: var(--muted); }
+  .import-zone input[type=file] { display: none; }
+  .field-map-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 10px; }
+  .field-map-table th { background: var(--light); color: var(--text); padding: 8px 12px; font-weight: 600; text-align: left; border: 1px solid var(--border); }
+  .field-map-table td { padding: 7px 12px; border: 1px solid var(--border); }
+  .preview-box { max-height: 240px; overflow: auto; border-radius: 8px; border: 1px solid var(--border); margin-top: 12px; }
+  .col-chip { display: inline-block; background: #e8edf7; color: var(--primary); border-radius: 5px; padding: 2px 9px; font-size: 0.78rem; font-weight: 600; margin: 2px; }
+  .import-success { background: #e6f4ec; border: 1px solid #b2dfcc; border-radius: 8px; padding: 14px 18px; color: var(--success); font-weight: 600; margin-top: 10px; }
+  .import-error-box { background: #fdecea; border: 1px solid #f5c6cb; border-radius: 8px; padding: 14px 18px; color: var(--danger); font-weight: 600; margin-top: 10px; }
+  .pref-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; }
+  .pref-item { display: flex; align-items: center; gap: 8px; border: 1.5px solid var(--border); border-radius: 8px; padding: 8px 12px; background: #fff; }
+  .pref-num { background: var(--primary); color: #fff; border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-size: 0.78rem; font-weight: 700; flex-shrink: 0; }
+  .pref-item select { flex: 1; border: none; outline: none; font-size: 0.85rem; color: var(--text); background: transparent; }
+  .result-highlight { background: linear-gradient(135deg, #1a7a4a, #145e38); color: #fff; border-radius: 10px; padding: 20px 24px; margin-bottom: 20px; display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+  .result-highlight .big { font-size: 2.5rem; font-weight: 900; }
+  .summary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 14px; margin-bottom: 20px; }
+  .summary-card { background: #fff; border-radius: 9px; padding: 16px; text-align: center; border: 1px solid var(--border); box-shadow: var(--shadow); }
+  .summary-card .num { font-size: 2rem; font-weight: 800; color: var(--primary); }
+  .summary-card .lbl { font-size: 0.78rem; color: var(--muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.3px; }
+  .alert { padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; font-size: 0.9rem; }
+  .alert-info { background: #e8edf7; color: var(--primary); border-left: 4px solid var(--primary); }
+  .alert-success { background: #e6f4ec; color: var(--success); border-left: 4px solid var(--success); }
+  .alert-warning { background: #fff8e1; color: #7a5800; border-left: 4px solid var(--accent); }
+  .alert-danger { background: #fdecea; color: var(--danger); border-left: 4px solid var(--danger); }
+  .flex { display: flex; } .gap { gap: 12px; } .flex-wrap { flex-wrap: wrap; }
+  .mt { margin-top: 16px; } .mb { margin-bottom: 16px; }
+  .text-right { text-align: right; } .text-center { text-align: center; }
+  .text-muted { color: var(--muted); font-size: 0.85rem; }
+  .divider { border: none; border-top: 1.5px solid var(--border); margin: 18px 0; }
+  .rank-input { width: 70px; padding: 5px 8px; border: 1.5px solid var(--border); border-radius: 6px; font-size: 0.88rem; text-align: center; }
+  @media print { .no-print { display: none; } }
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
+  .modal-overlay.show { display: flex; }
+  .modal { background: #fff; border-radius: 12px; max-width: 820px; width: 100%; max-height: 90vh; overflow: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+  .modal-header { background: var(--primary); color: #fff; padding: 16px 20px; font-weight: 700; display: flex; align-items: center; gap: 10px; border-radius: 12px 12px 0 0; }
+  .modal-body { padding: 22px; }
+  .modal-footer { padding: 16px 22px; border-top: 1px solid var(--border); display: flex; gap: 10px; justify-content: flex-end; }
+  .loading-overlay { display:none; position:fixed; inset:0; background:rgba(26,60,110,0.7); z-index:9999; align-items:center; justify-content:center; flex-direction:column; gap:16px; color:#fff; font-size:1rem; font-weight:600; }
+  .loading-overlay.show { display:flex; }
+  .spinner-ring { width:48px; height:48px; border:5px solid rgba(255,255,255,0.3); border-top-color:#fff; border-radius:50%; animation:spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (max-width: 600px) { .header-inner { flex-wrap: wrap; } .nav-btn { padding: 10px 8px; font-size: 0.76rem; } .pref-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div id="loadingOverlay" class="loading-overlay">
+  <div class="spinner-ring"></div>
+  <div id="loadingMsg">Please wait…</div>
+</div>
+
+<!-- LOGIN -->
+<div id="loginScreen" class="login-wrap">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="logo-circle">PR</div>
+      <h2>Panchayat Raj Engineering Department Transfers 2026</h2>
+      <p>Multi-Device Transfer Allotment System</p>
+    </div>
+    <div class="login-tabs">
+      <button class="login-tab active" onclick="switchLoginTab('admin')">🔐 Admin</button>
+      <button class="login-tab" onclick="switchLoginTab('employee')">👤 Employee</button>
+    </div>
+    <div id="loginError" class="login-error"></div>
+    <div class="form-group mb">
+      <label id="loginUserLabel">Username</label>
+      <input type="text" id="loginUser" placeholder="Enter username" autocomplete="off">
+    </div>
+    <div class="form-group mb">
+      <label>Password</label>
+      <input type="password" id="loginPass" placeholder="Enter password">
+    </div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;padding:12px;" onclick="doLogin()">Login →</button>
+    <div style="margin-top:14px;background:#e8edf7;border-radius:8px;padding:10px 14px;font-size:0.78rem;color:var(--muted);line-height:1.6;">
+      <strong style="color:var(--primary);">Admin:</strong> username: <code>admin</code> / password: <code>admin@321</code><br>
+      <strong style="color:var(--primary);">Employee:</strong> Use Employee ID and password set during import.
+    </div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="mainApp" style="display:none;">
+  <div class="header no-print">
+    <div class="header-inner">
+      <div class="header-logo">PR</div>
+      <div class="header-title">
+        <h1>Panchayat Raj Engineering Department Transfers 2026</h1>
+        <p>Online Allotment Management System – MySQL Edition</p>
+      </div>
+      <div class="header-badge" id="userBadge">Admin Panel</div>
+    </div>
+  </div>
+  <div class="nav no-print" id="mainNav"></div>
+
+  <!-- ADMIN PAGES -->
+  <div id="pageImport" class="page">
+    <div class="card">
+      <div class="card-header"><span>📂</span> Import Data from Excel</div>
+      <div class="card-body">
+        <div class="alert alert-info">Upload your Excel file (.xlsx / .xls). After upload, map columns to required fields.</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>What are you importing?</label>
+            <select id="importType" onchange="renderImportUI()">
+              <option value="employees">👥 Employee Information</option>
+              <option value="vacancies">🏢 Posts / Vacancies</option>
+            </select>
+          </div>
+        </div>
+        <div id="importUI"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="pageEmployees" class="page">
+    <div class="card">
+      <div class="card-header">
+        <span>👥</span> Employee Master – Seniority / Priority Rank
+        <button class="btn btn-excel btn-sm" style="margin-left:auto;" onclick="showPage('pageImport')">📂 Import Excel</button>
+      </div>
+      <div class="card-body">
+        <div class="alert alert-info">Set the <strong>Priority Rank</strong> for each employee (1 = highest priority). Rank 1 gets first pick.</div>
+        <div class="flex gap mb" style="flex-wrap:wrap;">
+          <button class="btn btn-outline btn-sm" onclick="autoRankByDefault()">↺ Auto-Rank by S.No</button>
+          <button class="btn btn-primary btn-sm" onclick="saveRanks()">💾 Save Ranks</button>
+          <button class="btn btn-success btn-sm" onclick="addEmployee()">+ Add Employee</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteAllEmployees()">🗑 Delete All</button>
+        </div>
+        <div id="empCount" class="text-muted mb" style="font-size:0.82rem;"></div>
+        <div class="table-wrap">
+          <table id="empTable">
+            <thead><tr>
+              <th>S.No</th><th>Employee ID</th><th>Name</th><th>Designation</th>
+              <th>Present Station</th><th>DOB</th><th>Priority Rank</th><th>Pref Status</th><th>Actions</th>
+            </tr></thead>
+            <tbody id="empTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="pageVacancies" class="page">
+    <div class="card">
+      <div class="card-header">
+        <span>🏢</span> Post / Vacancy Management
+        <button class="btn btn-excel btn-sm" style="margin-left:auto;" onclick="showPage('pageImport');document.getElementById('importType').value='vacancies';renderImportUI();">📂 Import Excel</button>
+      </div>
+      <div class="card-body">
+        <div class="flex gap mb" style="flex-wrap:wrap;">
+          <button class="btn btn-success btn-sm" onclick="addVacancy()">+ Add Post</button>
+          <button class="btn btn-primary btn-sm" onclick="saveVacancies()">💾 Save Names</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteAllVacancies()">🗑 Delete All</button>
+        </div>
+        <div id="vacCount" class="text-muted mb" style="font-size:0.82rem;"></div>
+        <div class="table-wrap">
+          <table id="vacTable">
+            <thead><tr><th>#</th><th>Post / Station Name</th><th>Status</th><th>Allotted To</th><th>Actions</th></tr></thead>
+            <tbody id="vacTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="pageAllotment" class="page">
+    <div class="card">
+      <div class="card-header"><span>⚙️</span> Run Allotment Process</div>
+      <div class="card-body">
+        <div class="alert alert-warning"><strong>Before running:</strong> Ensure all employees have submitted preferences and priority ranks are set.</div>
+        <div id="allotPreview" style="margin-bottom:16px;"></div>
+        <button class="btn btn-accent" onclick="runAllotment()" style="font-size:1rem;padding:12px 32px;">▶ Run Allotment Now</button>
+        <button class="btn btn-outline btn-sm" onclick="resetAllotment()" style="margin-left:10px;">🔄 Reset Allotment</button>
+        <div id="allotLog" style="margin-top:20px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="pageResults" class="page">
+    <div id="resultsContent"></div>
+  </div>
+
+  <!-- EMPLOYEE PAGES -->
+  <div id="pageMyPrefs" class="page">
+    <div class="card">
+      <div class="card-header"><span>📋</span> My Preference Submission</div>
+      <div class="card-body" id="prefBody"></div>
+    </div>
+  </div>
+
+  <div id="pageMyResult" class="page">
+    <div id="myResultContent"></div>
+  </div>
+</div>
+
+<!-- COLUMN MAPPER MODAL -->
+<div id="mapModal" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-header"><span>🗂</span> <span id="mapModalTitle">Map Excel Columns</span></div>
+    <div class="modal-body" id="mapModalBody"></div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-success" onclick="confirmImport()">✅ Import Data</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── API ───────────────────────────────────────────────────────────────────
+const API = window.location.origin;
+
+async function apiFetch(path, options = {}) {
+  const r = await fetch(API + path, {
+    headers: { 'Content-Type': 'application/json' },
+    ...options,
+    body: options.body ? JSON.stringify(options.body) : undefined,
+  });
+  const json = await r.json();
+  if (!json.success) throw new Error(json.error || 'API error');
+  return json;
+}
+
+// ─── STATE ─────────────────────────────────────────────────────────────────
+let currentUser = null, loginTab = 'admin';
+let employees = [], vacancies = [], preferences = {}, allotments = {}, allotmentDone = false;
+let importedSheetData = [], importedHeaders = [], pendingImportType = '';
+
+// ─── LOADING ───────────────────────────────────────────────────────────────
+function showLoading(msg='Please wait…') { document.getElementById('loadingMsg').textContent = msg; document.getElementById('loadingOverlay').classList.add('show'); }
+function hideLoading() { document.getElementById('loadingOverlay').classList.remove('show'); }
+
+// ─── LOGIN ──────────────────────────────────────────────────────────────────
+function switchLoginTab(tab) {
+  loginTab = tab;
+  document.querySelectorAll('.login-tab').forEach((t,i) => t.classList.toggle('active',(i===0&&tab==='admin')||(i===1&&tab==='employee')));
+  const lbl = document.getElementById('loginUserLabel'), inp = document.getElementById('loginUser');
+  if (tab==='admin') { lbl.textContent='Username'; inp.placeholder='Enter admin username'; }
+  else               { lbl.textContent='Employee ID'; inp.placeholder='Enter your Employee ID'; }
+}
+
+async function doLogin() {
+  const username = document.getElementById('loginUser').value.trim();
+  const password = document.getElementById('loginPass').value.trim();
+  const errEl = document.getElementById('loginError');
+  errEl.classList.remove('show');
+  if (!username||!password) { errEl.textContent='Please enter username and password.'; errEl.classList.add('show'); return; }
+  showLoading('Signing in…');
+  try {
+    const data = await apiFetch('/api/login', { method:'POST', body:{ role:loginTab, username, password } });
+    currentUser = { role:data.role, empDbId:data.empDbId||null, name:data.name };
+    await loadAllData();
+    showApp();
+  } catch(e) { errEl.textContent=e.message; errEl.classList.add('show'); }
+  finally { hideLoading(); }
+}
+
+async function loadAllData() {
+  const [eRes,vRes,pRes,aRes] = await Promise.all([
+    apiFetch('/api/employees'), apiFetch('/api/vacancies'),
+    apiFetch('/api/preferences'), apiFetch('/api/allotments'),
+  ]);
+  employees=eRes.employees; vacancies=vRes.vacancies;
+  preferences=pRes.preferences; allotments=aRes.allotments; allotmentDone=aRes.allotmentDone;
+}
+
+function showApp() {
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('mainApp').style.display='block';
+  buildNav();
+  document.getElementById('userBadge').textContent = currentUser.role==='admin'?'🔐 Admin':'👤 '+currentUser.name;
+  showPage(currentUser.role==='admin'?'pageImport':'pageMyPrefs');
+}
+
+async function doLogout() {
+  currentUser=null; employees=[]; vacancies=[]; preferences={}; allotments={}; allotmentDone=false;
+  document.getElementById('loginScreen').style.display='flex';
+  document.getElementById('mainApp').style.display='none';
+  document.getElementById('loginUser').value='';
+  document.getElementById('loginPass').value='';
+}
+
+function buildNav() {
+  const nav = document.getElementById('mainNav');
+  if (currentUser.role==='admin') {
+    nav.innerHTML=`<div class="nav-inner">
+      <button class="nav-btn" onclick="showPage('pageImport')">📂 Import Excel</button>
+      <button class="nav-btn" onclick="showPage('pageEmployees')">👥 Employees</button>
+      <button class="nav-btn" onclick="showPage('pageVacancies')">🏢 Posts</button>
+      <button class="nav-btn" onclick="showPage('pageAllotment')">⚙️ Run Allotment</button>
+      <button class="nav-btn" onclick="showPage('pageResults')">📊 Results</button>
+      <button class="nav-btn" onclick="doLogout()" style="margin-left:auto;color:#ff9999;">⏻ Logout</button>
+    </div>`;
+  } else {
+    nav.innerHTML=`<div class="nav-inner">
+      <button class="nav-btn" onclick="showPage('pageMyPrefs')">📋 My Preferences</button>
+      <button class="nav-btn" onclick="showPage('pageMyResult')">🎯 My Allotment</button>
+      <button class="nav-btn" onclick="doLogout()" style="margin-left:auto;color:#ff9999;">⏻ Logout</button>
+    </div>`;
+  }
+}
+
+async function showPage(pageId) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(pageId).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b=>{ if(b.getAttribute('onclick')?.includes(pageId)) b.classList.add('active'); });
+  showLoading('Loading…');
+  try { await loadAllData(); } catch(e) {}
+  hideLoading();
+  if (pageId==='pageImport')    renderImportUI();
+  if (pageId==='pageEmployees') renderEmpTable();
+  if (pageId==='pageVacancies') renderVacTable();
+  if (pageId==='pageAllotment') renderAllotPreview();
+  if (pageId==='pageResults')   renderResults();
+  if (pageId==='pageMyPrefs')   renderMyPrefs();
+  if (pageId==='pageMyResult')  renderMyResult();
+}
+
+// ─── IMPORT ────────────────────────────────────────────────────────────────
+function renderImportUI() {
+  const type = document.getElementById('importType').value;
+  document.getElementById('importUI').innerHTML=`
+    <hr class="divider">
+    <h3 style="margin-bottom:12px;color:var(--primary);font-size:1rem;">${type==='employees'?'👥 Import Employee Information':'🏢 Import Posts / Vacancies'}</h3>
+    ${type==='employees'?`<div class="alert alert-info" style="font-size:0.85rem;"><strong>Expected columns:</strong> S.No, Name, Designation, Employee ID, Password, Date of Birth, Present Station.</div>`
+    :`<div class="alert alert-warning" style="font-size:0.85rem;">⚠️ All existing posts will be <strong>replaced</strong> with the imported list. Allotment will be reset.</div>`}
+    <div class="import-zone" id="dropZone" onclick="document.getElementById('excelFileInput').click()"
+         ondragover="event.preventDefault();this.classList.add('dragover')"
+         ondragleave="this.classList.remove('dragover')"
+         ondrop="handleDrop(event,'${type}')">
+      <div class="icon-big">📊</div>
+      <p><strong>Click to browse</strong> or drag & drop your Excel file here</p>
+      <p style="margin-top:6px;font-size:0.78rem;">Supports .xlsx and .xls files</p>
+      <input type="file" id="excelFileInput" accept=".xlsx,.xls" onchange="handleFileSelect(event,'${type}')">
+    </div>
+    <div id="importFeedback"></div>`;
+}
+
+function handleDrop(e,type) { e.preventDefault(); document.getElementById('dropZone').classList.remove('dragover'); const f=e.dataTransfer.files[0]; if(f) processExcelFile(f,type); }
+function handleFileSelect(e,type) { const f=e.target.files[0]; if(f) processExcelFile(f,type); }
+
+function processExcelFile(file, type) {
+  const fb = document.getElementById('importFeedback');
+  fb.innerHTML=`<div class="alert alert-info" style="margin-top:12px;">⏳ Reading <strong>${file.name}</strong>...</div>`;
+  if (!file.name.match(/\.(xlsx|xls)$/i)) { fb.innerHTML=`<div class="import-error-box">❌ Invalid file type.</div>`; return; }
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try {
+      const wb=XLSX.read(new Uint8Array(e.target.result),{type:'array'});
+      const sn=wb.SheetNames[0];
+      const rows=XLSX.utils.sheet_to_json(wb.Sheets[sn],{defval:''});
+      if (!rows.length) { fb.innerHTML=`<div class="import-error-box">❌ No data found.</div>`; return; }
+      importedSheetData=rows; importedHeaders=Object.keys(rows[0]); pendingImportType=type;
+      fb.innerHTML=`
+        <div class="import-success">✅ File loaded! Sheet: <strong>"${sn}"</strong> — <strong>${rows.length}</strong> rows, <strong>${importedHeaders.length}</strong> columns.</div>
+        <div style="margin-top:10px;"><strong style="font-size:0.82rem;color:var(--muted);text-transform:uppercase;">Detected columns:</strong><br>
+          <div style="margin-top:6px;">${importedHeaders.map(h=>`<span class="col-chip">${h}</span>`).join('')}</div></div>
+        <div style="margin-top:14px;"><button class="btn btn-primary" onclick="openColumnMapper('${type}')">🗂 Map Columns & Import →</button></div>`;
+    } catch(ex) { fb.innerHTML=`<div class="import-error-box">❌ Error: ${ex.message}</div>`; }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+const EMP_FIELDS=[
+  {key:'sno',label:'S.No / Serial Number',required:true},
+  {key:'name',label:'Employee Name',required:true},
+  {key:'designation',label:'Designation',required:false},
+  {key:'employeeId',label:'Employee ID (login)',required:true},
+  {key:'password',label:'Password (login)',required:true},
+  {key:'dob',label:'Date of Birth',required:false},
+  {key:'station',label:'Present Station',required:false},
+];
+const VAC_FIELDS=[
+  {key:'sno',label:'S.No',required:false},
+  {key:'name',label:'Post / Station Name',required:true},
+];
+
+function guessColumn(headers, hints) {
+  for (const hint of hints) { const f=headers.find(h=>h.toLowerCase().replace(/[^a-z0-9]/g,'').includes(hint.toLowerCase().replace(/[^a-z0-9]/g,''))); if(f) return f; }
+  return '';
+}
+
+function openColumnMapper(type) {
+  const fields=type==='employees'?EMP_FIELDS:VAC_FIELDS;
+  document.getElementById('mapModalTitle').textContent=type==='employees'?'🗂 Map Employee Columns':'🗂 Map Vacancy Columns';
+  const guesses=type==='employees'?{
+    sno:guessColumn(importedHeaders,['sno','s.no','sl.no','serial','sl','#']),
+    name:guessColumn(importedHeaders,['name','candidate','employee','empname']),
+    designation:guessColumn(importedHeaders,['designation','desig','post','position']),
+    employeeId:guessColumn(importedHeaders,['employeeid','empid','employee id','emp id','id']),
+    password:guessColumn(importedHeaders,['password','pass','pwd']),
+    dob:guessColumn(importedHeaders,['dob','birth','born','dateofbirth','date of birth']),
+    station:guessColumn(importedHeaders,['station','present','posting','place','location','working','office']),
+  }:{
+    sno:guessColumn(importedHeaders,['sno','s.no','serial','sl','#']),
+    name:guessColumn(importedHeaders,['name','post','station','vacancy','place']),
+  };
+  const previewRows=importedSheetData.slice(0,5);
+  const mapRows=fields.map(f=>`
+    <tr>
+      <td><strong>${f.label}</strong>${f.required?' <span style="color:var(--danger);">*</span>':' <span style="color:var(--muted);font-size:0.75rem;">(optional)</span>'}</td>
+      <td><select id="map_${f.key}" style="width:100%;padding:6px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:0.85rem;">
+        <option value="">-- Skip --</option>
+        ${importedHeaders.map(h=>`<option value="${h}" ${guesses[f.key]===h?'selected':''}>${h}</option>`).join('')}
+      </select></td>
+    </tr>`).join('');
+  document.getElementById('mapModalBody').innerHTML=`
+    <div style="margin-bottom:18px;">
+      <strong style="font-size:0.85rem;color:var(--muted);text-transform:uppercase;">Preview (first 5 rows)</strong>
+      <div class="preview-box">
+        <table style="font-size:0.78rem;width:100%;border-collapse:collapse;">
+          <thead><tr>${importedHeaders.map(h=>`<th style="padding:6px 10px;background:var(--primary);color:#fff;white-space:nowrap;">${h}</th>`).join('')}</tr></thead>
+          <tbody>${previewRows.map(r=>`<tr>${importedHeaders.map(h=>`<td style="padding:5px 10px;border-bottom:1px solid var(--border);white-space:nowrap;">${r[h]??''}</td>`).join('')}</tr>`).join('')}</tbody>
+        </table>
+      </div>
+    </div>
+    <strong style="font-size:0.85rem;color:var(--muted);text-transform:uppercase;">Map Your Columns</strong>
+    <p style="font-size:0.82rem;color:var(--muted);margin:6px 0 12px;">Auto-guessed from headers. Adjust if needed.</p>
+    <table class="field-map-table">
+      <thead><tr><th>Required Field</th><th>Your Excel Column</th></tr></thead>
+      <tbody>${mapRows}</tbody>
+    </table>
+    <div id="mapError" style="margin-top:10px;"></div>`;
+  document.getElementById('mapModal').classList.add('show');
+}
+
+function closeModal() { document.getElementById('mapModal').classList.remove('show'); }
+
+async function confirmImport() {
+  const type=pendingImportType, fields=type==='employees'?EMP_FIELDS:VAC_FIELDS;
+  const mapping={}; let valid=true;
+  for (const f of fields) {
+    const val=document.getElementById('map_'+f.key)?.value;
+    mapping[f.key]=val||null;
+    if (f.required&&!val) { document.getElementById('mapError').innerHTML=`<div class="import-error-box">❌ "${f.label}" is required.</div>`; valid=false; break; }
+  }
+  if (!valid) return;
+  closeModal();
+  if (type==='employees') await importEmployees(mapping);
+  else await importVacancies(mapping);
+}
+
+async function importEmployees(mapping) {
+  const imported=[];
+  importedSheetData.forEach(row=>{
+    const name=mapping.name?String(row[mapping.name]||'').trim():'';
+    if (!name) return;
+    const sno=mapping.sno?(parseInt(row[mapping.sno])||imported.length+1):imported.length+1;
+    imported.push({
+      id:imported.length+1, sno, name,
+      designation:mapping.designation?String(row[mapping.designation]||'Dy.E.E.').trim():'Dy.E.E.',
+      employeeId:mapping.employeeId?String(row[mapping.employeeId]||'').trim():String(sno),
+      password:mapping.password?String(row[mapping.password]||'dee2026').trim():'dee2026',
+      dob:mapping.dob?String(row[mapping.dob]||'-').trim():'-',
+      station:mapping.station?String(row[mapping.station]||'-').trim():'-',
+      rank:imported.length+1,
+    });
+  });
+  if (!imported.length) { showToast('⚠️ No valid employee rows found.'); return; }
+  showLoading(`Saving ${imported.length} employees to MySQL…`);
+  try {
+    await apiFetch('/api/employees',{method:'POST',body:{employees:imported}});
+    await loadAllData();
+    showToast(`✅ ${imported.length} employees imported!`);
+    document.getElementById('importFeedback').innerHTML=`
+      <div class="import-success">✅ ${imported.length} employees imported to MySQL!
+        <button class="btn btn-primary btn-sm" style="margin-left:10px;" onclick="showPage('pageEmployees')">View Employees →</button>
+      </div>`;
+  } catch(e) { showToast('❌ Import failed: '+e.message); }
+  finally { hideLoading(); }
+}
+
+async function importVacancies(mapping) {
+  const imported=[];
+  importedSheetData.forEach(row=>{
+    const name=mapping.name?String(row[mapping.name]||'').trim():'';
+    if (name) imported.push({name});
+  });
+  if (!imported.length) { showToast('⚠️ No valid vacancy rows found.'); return; }
+  showLoading(`Saving ${imported.length} posts to MySQL…`);
+  try {
+    await apiFetch('/api/vacancies',{method:'POST',body:{vacancies:imported}});
+    await loadAllData();
+    showToast(`✅ ${imported.length} posts imported!`);
+    document.getElementById('importFeedback').innerHTML=`
+      <div class="import-success">✅ ${imported.length} posts imported!
+        <button class="btn btn-primary btn-sm" style="margin-left:10px;" onclick="showPage('pageVacancies')">View Posts →</button>
+      </div>`;
+  } catch(e) { showToast('❌ Import failed: '+e.message); }
+  finally { hideLoading(); }
+}
+
+// ─── EMPLOYEES ──────────────────────────────────────────────────────────────
+function renderEmpTable() {
+  const sorted=[...employees].sort((a,b)=>a.rank_order-b.rank_order);
+  document.getElementById('empCount').textContent=`Total: ${employees.length} employees`;
+  document.getElementById('empTbody').innerHTML=sorted.map(e=>`
+    <tr>
+      <td>${e.sno}</td><td><strong>${e.employee_id}</strong></td><td>${e.name}</td>
+      <td>${e.designation}</td><td>${e.station}</td><td>${e.dob}</td>
+      <td><input type="number" class="rank-input" value="${e.rank_order}" min="1" max="${employees.length}" onchange="updateLocalRank(${e.id},this.value)"></td>
+      <td>${(preferences[e.id]?.length>0)?'<span class="badge badge-success">✅ Submitted</span>':'<span class="badge badge-pending">⏳ Awaiting</span>'}</td>
+      <td>
+        <button class="btn btn-outline btn-sm" onclick="viewEmpPrefs(${e.id})">👁 Prefs</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteEmployee(${e.id})">🗑</button>
+      </td>
+    </tr>`).join('');
+}
+
+function updateLocalRank(id,val) { const e=employees.find(x=>x.id===id); if(e) e.rank_order=parseInt(val)||e.rank_order; }
+
+async function saveRanks() {
+  const ranks=employees.map(e=>e.rank_order);
+  if (new Set(ranks).size!==ranks.length) { alert('⚠️ Duplicate ranks! Each must be unique.'); return; }
+  showLoading('Saving ranks to MySQL…');
+  try {
+    await apiFetch('/api/employees/ranks',{method:'PUT',body:{ranks:employees.map(e=>({id:e.id,rank:e.rank_order}))}});
+    await loadAllData(); renderEmpTable(); showToast('✅ Ranks saved!');
+  } catch(e) { showToast('❌ '+e.message); }
+  finally { hideLoading(); }
+}
+
+async function autoRankByDefault() {
+  const sorted=[...employees].sort((a,b)=>a.sno-b.sno);
+  sorted.forEach((e,i)=>{ employees.find(x=>x.id===e.id).rank_order=i+1; });
+  showLoading('Saving…');
+  try {
+    await apiFetch('/api/employees/ranks',{method:'PUT',body:{ranks:employees.map(e=>({id:e.id,rank:e.rank_order}))}});
+    await loadAllData(); renderEmpTable(); showToast('✅ Auto-ranked by S.No');
+  } catch(e) { showToast('❌ '+e.message); }
+  finally { hideLoading(); }
+}
+
+async function addEmployee() {
+  const name=prompt('Employee Name:'); if(!name) return;
+  const employeeId=prompt('Employee ID:'); if(!employeeId) return;
+  const password=prompt('Password:'); if(!password) return;
+  showLoading('Adding…');
+  try {
+    await apiFetch('/api/employees/add',{method:'POST',body:{name,employeeId,password}});
+    await loadAllData(); renderEmpTable(); showToast('✅ Employee added.');
+  } catch(e) { showToast('❌ '+e.message); }
+  finally { hideLoading(); }
+}
+
+async function deleteEmployee(id) {
+  if (!confirm('Delete this employee?')) return;
+  showLoading('Deleting…');
+  try { await apiFetch(`/api/employees/${id}`,{method:'DELETE'}); await loadAllData(); renderEmpTable(); showToast('✅ Deleted.'); }
+  catch(e) { showToast('❌ '+e.message); }
+  finally { hideLoading(); }
+}
+
+async function deleteAllEmployees() {
+  if (!employees.length) { showToast('⚠️ No employees.'); return; }
+  if (!confirm(`⚠️ Delete ALL ${employees.length} employees? Cannot be undone.`)) return;
+  showLoading('Deleting all…');
+  try { await apiFetch('/api/employees',{method:'DELETE'}); await loadAllData(); renderEmpTable(); showToast('🗑 All deleted.'); }
+  catch(e) { showToast('❌ '+e.message); }
+  finally { hideLoading(); }
+}
+
+function viewEmpPrefs(id) {
+  const emp=employees.find(e=>e.id===id);
+  const prefs=(preferences[id]||[]).filter(Boolean);
+  if (!prefs.length) { alert(`${emp.name} has not submitted preferences yet.`); return; }
+  alert(`Preferences of ${emp.name} (${prefs.length} submitted):\n`+prefs.map((p,i)=>`  ${i+1}. ${p}`).join('\n'));
+}
+
+// ─── VACANCIES ──────────────────────────────────────────────────────────────
+function renderVacTable() {
+  document.getElementById('vacCount').textContent=`Total: ${vacancies.length} posts`;
+  document.getElementById('vacTbody').innerHTML=vacancies.map((v,i)=>`
+    <tr>
+      <td>${i+1}</td>
+      <td><input style="border:none;background:transparent;width:100%;font-size:0.88rem;" value="${v.name}" onchange="updateLocalVacName(${v.id},this.value)"></td>
+      <td>${v.status==='allotted'?'<span class="badge badge-success">✅ Allotted</span>':'<span class="badge badge-pending">Vacant</span>'}</td>
+      <td>${v.allotted_to?(employees.find(e=>e.id===v.allotted_to)?.name||'-'):'-'}</td>
+      <td><button class="btn btn-danger btn-sm" onclick="deleteVacancy(${v.id})">🗑</button></td>
+    </tr>`).join('');
+}
+
+function updateLocalVacName(id,name) { const v=vacancies.find(x=>x.id===id); if(v) v.name=name; }
+
+async function addVacancy() {
+  const name=prompt('Post/Station name:'); if(!name) return;
+  showLoading('Adding…');
+  try { await apiFetch('/api/vacancies/add',{method:'POST',body:{name:name.trim()}}); await loadAllData(); renderVacTable(); showToast('✅ Post added.'); }
+  catch(e) { showToast('❌ '+e.message); }
+  finally { hideLoading(); }
+}
+
+async function saveVacancies() {
+  showLoading('Saving names…');
+  try {
+    await Promise.all(vacancies.map(v=>apiFetch(`/api/vacancies/${v.id}`,{method:'PUT',body:{name:v.name}})));
+    await loadAllData(); renderVacTable(); showToast('✅ Saved!');
+  } catch(e) { showToast('❌ '+e.message); }
+  finally { hideLoading(); }
+}
+
+async function deleteVacancy(id) {
+  if (!confirm('Remove this post?')) return;
+  showLoading('Deleting…');
+  try { await apiFetch(`/api/vacancies/${id}`,{method:'DELETE'}); await loadAllData(); renderVacTable(); showToast('✅ Deleted.'); }
+  catch(e) { showToast('❌ '+e.message); }
+  finally { hideLoading(); }
+}
+
+async function deleteAllVacancies() {
+  if (!vacancies.length) { showToast('⚠️ No posts.'); return; }
+  if (!confirm(`⚠️ Delete ALL ${vacancies.length} posts? Cannot be undone.`)) return;
+  showLoading('Deleting all…');
+  try { await apiFetch('/api/vacancies',{method:'DELETE'}); await loadAllData(); renderVacTable(); showToast('🗑 All deleted.'); }
+  catch(e) { showToast('❌ '+e.message); }
+  finally { hideLoading(); }
+}
+
+// ─── ALLOTMENT ──────────────────────────────────────────────────────────────
+function renderAllotPreview() {
+  const submitted=employees.filter(e=>preferences[e.id]?.some(Boolean)).length;
+  document.getElementById('allotPreview').innerHTML=`
+    <div class="summary-grid">
+      <div class="summary-card"><div class="num">${employees.length}</div><div class="lbl">Total Employees</div></div>
+      <div class="summary-card"><div class="num" style="color:var(--success)">${submitted}</div><div class="lbl">Prefs Submitted</div></div>
+      <div class="summary-card"><div class="num" style="color:#856404">${employees.length-submitted}</div><div class="lbl">Awaiting Prefs</div></div>
+      <div class="summary-card"><div class="num">${vacancies.length}</div><div class="lbl">Total Posts</div></div>
+    </div>
+    ${allotmentDone?'<div class="alert alert-success">✅ Allotment has been run. Check Results tab.</div>':''}`;
+  document.getElementById('allotLog').innerHTML='';
+}
+
+async function runAllotment() {
+  if (!confirm('Run allotment now? This processes all employees in priority order.')) return;
+  showLoading('Running allotment in MySQL…');
+  try {
+    const data=await apiFetch('/api/allotments/run',{method:'POST'});
+    await loadAllData(); renderAllotPreview();
+    document.getElementById('allotLog').innerHTML=`
+      <div class="card">
+        <div class="card-header"><span>📋</span> Allotment Log</div>
+        <div class="card-body">
+          <div class="alert alert-success">✅ Completed! ${data.allotCount} of ${data.total} employees allotted.</div>
+          <div class="table-wrap"><table>
+            <thead><tr><th>Priority Rank</th><th>Employee Name</th><th>Allotted Post</th><th>Preference No.</th><th>Status</th></tr></thead>
+            <tbody>${data.log.map(l=>`<tr>
+              <td>#${l.rank}</td><td>${l.name}</td><td>${l.post}</td>
+              <td>${l.pref!=='-'?'Pref '+l.pref:'-'}</td>
+              <td>${l.status==='allotted'?'<span class="badge badge-success">✅ Allotted</span>':l.status==='no-prefs'?'<span class="badge badge-danger">No Prefs</span>':'<span class="badge badge-danger">Not Allotted</span>'}</td>
+            </tr>`).join('')}</tbody>
+          </table></div>
+        </div>
+      </div>`;
+    showToast('✅ Allotment done!');
+  } catch(e) { showToast('❌ '+e.message); }
+  finally { hideLoading(); }
+}
+
+async function resetAllotment() {
+  if (!confirm('Reset all allotments?')) return;
+  showLoading('Resetting…');
+  try { await apiFetch('/api/allotments/reset',{method:'POST'}); await loadAllData(); renderAllotPreview(); showToast('🔄 Reset done.'); }
+  catch(e) { showToast('❌ '+e.message); }
+  finally { hideLoading(); }
+}
+
+// ─── RESULTS ────────────────────────────────────────────────────────────────
+function renderResults() {
+  const el=document.getElementById('resultsContent');
+  if (!allotmentDone) {
+    el.innerHTML=`<div class="card"><div class="card-body"><div class="alert alert-warning">⚠️ Allotment not run yet. Go to <strong>Run Allotment</strong> first.</div></div></div>`;
+    return;
+  }
+  const sorted=[...employees].sort((a,b)=>a.rank_order-b.rank_order);
+  const allotted=sorted.filter(e=>allotments[e.id]);
+  const vacantPosts=vacancies.filter(v=>v.status==='vacant');
+  el.innerHTML=`
+    <div class="result-highlight">
+      <div>
+        <div style="font-size:0.9rem;opacity:0.85;margin-bottom:4px;">ALLOTMENT COMPLETE</div>
+        <div class="big">${allotted.length}/${employees.length}</div>
+        <div style="font-size:0.9rem;opacity:0.85;">Employees Successfully Allotted</div>
+      </div>
+      <div style="margin-left:auto;display:flex;gap:24px;flex-wrap:wrap;">
+        <div style="text-align:center;"><div style="font-size:1.6rem;font-weight:800;">${vacantPosts.length}</div><div style="font-size:0.8rem;opacity:0.8;">Posts Vacant</div></div>
+        <div style="text-align:center;"><div style="font-size:1.6rem;font-weight:800;">${employees.length-allotted.length}</div><div style="font-size:0.8rem;opacity:0.8;">Not Allotted</div></div>
+      </div>
+    </div>
+    <div class="card mb">
+      <div class="card-header">
+        <span>📊</span> Final Allotment Results
+        <div style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="btn btn-sm" style="background:rgba(255,255,255,0.15);color:#fff;" onclick="window.print()">🖨 Print</button>
+          <button class="btn btn-sm btn-pdf" onclick="downloadResultsPDF()">📄 PDF</button>
+          <button class="btn btn-sm btn-excel" onclick="exportResultsExcel()">⬇ Excel</button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="table-wrap"><table>
+          <thead><tr><th>Rank</th><th>Emp ID</th><th>Name</th><th>Designation</th><th>Present Station</th><th>Allotted Post</th><th>Pref #</th><th>Status</th></tr></thead>
+          <tbody>${sorted.map(e=>{const a=allotments[e.id]; return `<tr>
+            <td><strong>#${e.rank_order}</strong></td><td>${e.employee_id}</td><td><strong>${e.name}</strong></td>
+            <td>${e.designation}</td><td>${e.station}</td>
+            <td>${a?'<strong>'+a.post+'</strong>':'<span style="color:var(--muted)">—</span>'}</td>
+            <td>${a?'<span class="badge badge-primary">Pref '+a.prefNumber+'</span>':'—'}</td>
+            <td>${a?'<span class="badge badge-success">✅ Allotted</span>':preferences[e.id]?.some(Boolean)?'<span class="badge badge-danger">Not Allotted</span>':'<span class="badge badge-danger">No Prefs</span>'}</td>
+          </tr>`;}).join('')}</tbody>
+        </table></div>
+      </div>
+    </div>
+    ${vacantPosts.length>0?`
+    <div class="card">
+      <div class="card-header"><span>🏢</span> Remaining Vacant Posts (${vacantPosts.length})</div>
+      <div class="card-body">
+        <div class="table-wrap"><table>
+          <thead><tr><th>#</th><th>Post Name</th><th>Status</th></tr></thead>
+          <tbody>${vacantPosts.map((v,i)=>`<tr><td>${i+1}</td><td>${v.name}</td><td><span class="badge badge-pending">Vacant</span></td></tr>`).join('')}</tbody>
+        </table></div>
+      </div>
+    </div>`:''}`;
+}
+
+function exportResultsExcel() {
+  const sorted=[...employees].sort((a,b)=>a.rank_order-b.rank_order);
+  const rows=[['Priority Rank','Employee ID','Employee Name','Designation','Present Station','Allotted Post','Preference No','Status']];
+  sorted.forEach(e=>{
+    const a=allotments[e.id];
+    rows.push([e.rank_order,e.employee_id,e.name,e.designation,e.station,a?a.post:'',a?a.prefNumber:'',a?'Allotted':preferences[e.id]?.some(Boolean)?'Not Allotted':'No Prefs']);
+  });
+  const wb=XLSX.utils.book_new(), ws=XLSX.utils.aoa_to_sheet(rows);
+  ws['!cols']=[8,14,22,14,30,30,12,14].map(w=>({wch:w}));
+  XLSX.utils.book_append_sheet(wb,ws,'Allotment Results');
+  XLSX.writeFile(wb,'Allotment_Results.xlsx');
+}
+
+async function loadScript(src) {
+  return new Promise((res,rej)=>{ if(document.querySelector(`script[src="${src}"]`)){res();return;} const s=document.createElement('script'); s.src=src; s.onload=res; s.onerror=rej; document.head.appendChild(s); });
+}
+
+async function downloadResultsPDF() {
+  showLoading('Generating PDF…');
+  try {
+    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+    const {jsPDF}=window.jspdf;
+    const sorted=[...employees].sort((a,b)=>a.rank_order-b.rank_order);
+    const allotted=sorted.filter(e=>allotments[e.id]);
+    const vacantPosts=vacancies.filter(v=>v.status==='vacant');
+    const doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
+    const pageW=doc.internal.pageSize.getWidth(), pageH=doc.internal.pageSize.getHeight(), margin=14;
+    let y=margin;
+    doc.setFillColor(26,60,110); doc.rect(0,0,pageW,22,'F');
+    doc.setTextColor(255,255,255); doc.setFontSize(13); doc.setFont('helvetica','bold');
+    doc.text('Panchayat Raj Engineering Department – Transfer Allotment Results 2026',pageW/2,14,{align:'center'});
+    y=30;
+    doc.setFontSize(9); doc.setTextColor(26,60,110); doc.setFont('helvetica','bold');
+    const si=[`Total: ${employees.length}`,`Allotted: ${allotted.length}`,`Not Allotted: ${employees.length-allotted.length}`,`Vacant Posts: ${vacantPosts.length}`,`Generated: ${new Date().toLocaleString('en-IN')}`];
+    const cw=(pageW-margin*2)/si.length;
+    si.forEach((txt,i)=>{ doc.setFillColor(232,237,247); doc.roundedRect(margin+i*cw,y,cw-2,10,2,2,'F'); doc.setTextColor(26,60,110); doc.text(txt,margin+i*cw+(cw-2)/2,y+6.5,{align:'center'}); });
+    y+=16;
+    const cols=[{label:'Rank',w:14},{label:'Emp ID',w:18},{label:'Name',w:42},{label:'Designation',w:22},{label:'Present Station',w:48},{label:'Allotted Post',w:48},{label:'Pref#',w:14},{label:'Status',w:22}];
+    const rowH=8, totalW=cols.reduce((s,c)=>s+c.w,0);
+    function drawHeader(yP) {
+      let x=margin; doc.setFillColor(26,60,110); doc.rect(margin,yP,totalW,rowH,'F');
+      doc.setTextColor(255,255,255); doc.setFontSize(7.5); doc.setFont('helvetica','bold');
+      cols.forEach(c=>{doc.text(c.label,x+c.w/2,yP+5.5,{align:'center'}); x+=c.w;}); return yP+rowH;
+    }
+    y=drawHeader(y); doc.setFontSize(7);
+    sorted.forEach((e,idx)=>{
+      const a=allotments[e.id];
+      if (y+rowH>pageH-margin) { doc.addPage(); y=margin; doc.setFillColor(26,60,110); doc.rect(0,0,pageW,14,'F'); doc.setTextColor(255,255,255); doc.setFontSize(9); doc.setFont('helvetica','bold'); doc.text('PR Dept Transfer Allotment 2026 – continued',pageW/2,10,{align:'center'}); y=18; y=drawHeader(y); doc.setFontSize(7); }
+      doc.setFillColor(idx%2===0?248:255,idx%2===0?250:255,idx%2===0?252:255); doc.rect(margin,y,totalW,rowH,'F');
+      doc.setFillColor(a?26:192,a?122:57,a?74:43); doc.rect(margin,y,2,rowH,'F');
+      doc.setTextColor(26,34,51); doc.setFont('helvetica','normal');
+      const vals=[`#${e.rank_order}`,e.employee_id,e.name,e.designation,e.station,a?a.post:'—',a?`Pref ${a.prefNumber}`:'—',a?'Allotted':'Not Allotted'];
+      let x=margin;
+      cols.forEach((col,ci)=>{
+        const txt=String(vals[ci]||''), mc=Math.floor(col.w/1.8), disp=txt.length>mc?txt.substring(0,mc-1)+'…':txt;
+        if(ci===7){doc.setTextColor(a?26:192,a?122:57,a?74:43);doc.setFont('helvetica','bold');doc.text(disp,x+col.w/2,y+5.5,{align:'center'});doc.setTextColor(26,34,51);doc.setFont('helvetica','normal');}
+        else{doc.text(disp,x+2,y+5.5);}
+        doc.setDrawColor(208,216,232); doc.rect(x,y,col.w,rowH,'S'); x+=col.w;
+      });
+      y+=rowH;
+    });
+    const tp=doc.internal.getNumberOfPages();
+    for(let p=1;p<=tp;p++){doc.setPage(p);doc.setFillColor(26,60,110);doc.rect(0,pageH-10,pageW,10,'F');doc.setTextColor(255,255,255);doc.setFontSize(7);doc.setFont('helvetica','normal');doc.text('Panchayat Raj Engineering Department – Confidential',margin,pageH-3.5);doc.text(`Page ${p} of ${tp}`,pageW-margin,pageH-3.5,{align:'right'});}
+    doc.save('PR_Dept_Allotment_Results_2026.pdf');
+  } catch(e) { alert('PDF error: '+e.message); }
+  finally { hideLoading(); }
+}
+
+// ─── EMPLOYEE PREFS ─────────────────────────────────────────────────────────
+async function renderMyPrefs() {
+  const emp=employees.find(e=>e.id===currentUser.empDbId);
+  if (!emp) { document.getElementById('prefBody').innerHTML='<div class="alert alert-danger">Error loading your profile. Please re-login.</div>'; return; }
+  const existing=preferences[emp.id]||[];
+  document.getElementById('prefBody').innerHTML=`
+    <div class="alert alert-info"><strong>Welcome, ${emp.name}!</strong> Select your post preferences in order of priority. Changes are saved to the MySQL database instantly and visible to admin from any device.</div>
+    <div style="background:var(--light);border-radius:8px;padding:14px 16px;margin-bottom:18px;font-size:0.88rem;">
+      <strong>Designation:</strong> ${emp.designation} &nbsp;|&nbsp;
+      <strong>Employee ID:</strong> ${emp.employee_id} &nbsp;|&nbsp;
+      <strong>Present Station:</strong> ${emp.station} &nbsp;|&nbsp;
+      <strong>DOB:</strong> ${emp.dob} &nbsp;|&nbsp;
+      <strong>Priority Rank:</strong> #${emp.rank_order}
+    </div>
+    ${allotmentDone?'<div class="alert alert-warning">⚠️ Allotment completed. View result in "My Allotment" tab.</div>':''}
+    <div class="pref-grid" id="prefGrid">
+      ${Array.from({length:vacancies.length},(_,i)=>`
+        <div class="pref-item">
+          <div class="pref-num">${i+1}</div>
+          <select id="pref_${i}" ${allotmentDone?'disabled':''}>
+            <option value="">-- Select Post --</option>
+            ${vacancies.map(v=>`<option value="${v.name}" ${existing[i]===v.name?'selected':''}>${v.name}</option>`).join('')}
+          </select>
+        </div>`).join('')}
+    </div>
+    ${!allotmentDone?`
+    <div class="flex gap mt" style="flex-wrap:wrap;">
+      <button class="btn btn-success" onclick="savePreferences()">💾 Save Preferences to Database</button>
+      <button class="btn btn-outline" onclick="clearPrefs()">🗑 Clear All</button>
+    </div>`:''}`;
+}
+
+async function savePreferences() {
+  const emp=employees.find(e=>e.id===currentUser.empDbId);
+  const prefs=[]; const seen=new Set();
+  for (let i=0;i<vacancies.length;i++) {
+    const val=document.getElementById('pref_'+i)?.value;
+    if (val) {
+      if (seen.has(val)) { alert(`⚠️ Duplicate selection: "${val}"`); return; }
+      seen.add(val); prefs.push(val);
+    }
+  }
+  if (!prefs.length) { alert('Please select at least 1 preference.'); return; }
+  showLoading('Saving preferences to MySQL…');
+  try {
+    await apiFetch(`/api/preferences/${emp.id}`,{method:'POST',body:{prefs}});
+    await loadAllData(); showToast(`✅ ${prefs.length} preferences saved!`);
+  } catch(e) { showToast('❌ '+e.message); }
+  finally { hideLoading(); }
+}
+
+function clearPrefs() { for(let i=0;i<vacancies.length;i++){const s=document.getElementById('pref_'+i);if(s)s.value='';} }
+
+// ─── MY RESULT ───────────────────────────────────────────────────────────────
+function renderMyResult() {
+  const emp=employees.find(e=>e.id===currentUser.empDbId);
+  const el=document.getElementById('myResultContent');
+  if (!allotmentDone) {
+    el.innerHTML=`<div class="card"><div class="card-header"><span>🎯</span> My Allotment Result</div><div class="card-body">
+      <div class="alert alert-warning">⏳ Allotment not run yet. Please wait for admin.</div>
+      ${preferences[emp.id]?.some(Boolean)?'<div class="alert alert-success">✅ Your preferences are submitted.</div>':'<div class="alert alert-danger">⚠️ You have not submitted preferences yet!</div>'}
+    </div></div>`; return;
+  }
+  const a=allotments[emp.id];
+  const myPrefs=(preferences[emp.id]||[]).filter(Boolean);
+  el.innerHTML=`<div class="card">
+    <div class="card-header"><span>🎯</span> My Allotment Result</div>
+    <div class="card-body">
+      <div style="background:${a?'linear-gradient(135deg,#1a7a4a,#145e38)':'linear-gradient(135deg,#c0392b,#922b21)'};color:#fff;border-radius:10px;padding:24px;margin-bottom:20px;text-align:center;">
+        <div style="font-size:3rem;margin-bottom:8px;">${a?'🎉':'😔'}</div>
+        <div style="font-size:1.5rem;font-weight:800;margin-bottom:6px;">${a?a.post:'Not Allotted'}</div>
+        <div style="opacity:0.85;font-size:0.9rem;">${a?`Allotted via Preference No. ${a.prefNumber}`:'No post could be allotted based on your preferences.'}</div>
+      </div>
+      <div class="summary-grid">
+        <div class="summary-card"><div class="num" style="font-size:1.3rem;">${emp.name.split(' ')[0]}</div><div class="lbl">Your Name</div></div>
+        <div class="summary-card"><div class="num" style="font-size:1.3rem;">${emp.employee_id}</div><div class="lbl">Employee ID</div></div>
+        <div class="summary-card"><div class="num" style="font-size:1.3rem;">#${emp.rank_order}</div><div class="lbl">Priority Rank</div></div>
+        <div class="summary-card"><div class="num" style="font-size:1.3rem;">${myPrefs.length}</div><div class="lbl">Prefs Submitted</div></div>
+        ${a?`<div class="summary-card"><div class="num" style="font-size:1.3rem;">${a.prefNumber}</div><div class="lbl">Pref Matched</div></div>`:''}
+      </div>
+      ${myPrefs.length>0?`
+      <div>
+        <strong style="font-size:0.9rem;color:var(--muted);text-transform:uppercase;">Your Submitted Preferences</strong>
+        <div style="margin-top:10px;display:flex;flex-direction:column;gap:6px;">
+          ${myPrefs.map((p,i)=>`
+            <div style="display:flex;align-items:center;gap:10px;padding:9px 14px;border-radius:7px;border:1.5px solid ${a?.post===p?'var(--success)':'var(--border)'};background:${a?.post===p?'#e6f4ec':'#fff'};">
+              <span style="background:${a?.post===p?'var(--success)':'var(--primary)'};color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;flex-shrink:0;">${i+1}</span>
+              <span style="flex:1;">${p}</span>
+              ${a?.post===p?'<span class="badge badge-success">✅ ALLOTTED</span>':''}
+            </div>`).join('')}
+        </div>
+      </div>`:''}
+    </div>
+  </div>`;
+}
+
+// ─── UTILS ──────────────────────────────────────────────────────────────────
+function showToast(msg) {
+  let t=document.getElementById('toast');
+  if(!t){t=document.createElement('div');t.id='toast';document.body.appendChild(t);
+    Object.assign(t.style,{position:'fixed',bottom:'24px',right:'24px',background:'#1a3c6e',color:'#fff',padding:'12px 20px',borderRadius:'8px',fontWeight:'600',zIndex:9999,fontSize:'0.9rem',boxShadow:'0 4px 20px rgba(0,0,0,0.25)',transition:'opacity 0.3s'});}
+  t.textContent=msg; t.style.opacity='1'; clearTimeout(t._timer); t._timer=setTimeout(()=>t.style.opacity='0',3500);
+}
+
+document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&document.getElementById('loginScreen').style.display!=='none') doLogin(); if(e.key==='Escape') closeModal(); });
+</script>
+</body>
+</html>
